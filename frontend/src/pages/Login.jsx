@@ -68,7 +68,7 @@ export default function Login() {
             NexusCRM
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 6 }}>
-            Cloud-powered customer management
+            Best CRM System 2024
           </p>
         </div>
 
