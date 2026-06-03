@@ -53,6 +53,26 @@ const initDB = async () => {
         updated_at TIMESTAMP DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS products (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name VARCHAR(200) NOT NULL,
+        sku VARCHAR(50) UNIQUE NOT NULL,
+        category VARCHAR(60) DEFAULT 'apparel' CHECK (category IN ('apparel', 'outerwear', 'footwear', 'accessories', 'textile', 'other')),
+        description TEXT,
+        size VARCHAR(20),
+        color VARCHAR(40),
+        unit_price NUMERIC(15, 2) DEFAULT 0,
+        currency VARCHAR(10) DEFAULT 'USD',
+        stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0),
+        reorder_level INTEGER DEFAULT 10,
+        warehouse VARCHAR(100) DEFAULT 'Main Warehouse',
+        status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'discontinued', 'out_of_stock')),
+        supplier VARCHAR(150),
+        created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+
       CREATE TABLE IF NOT EXISTS deals (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         title VARCHAR(200) NOT NULL,
@@ -104,6 +124,9 @@ const initDB = async () => {
       CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date);
       CREATE INDEX IF NOT EXISTS idx_activities_customer_id ON activities(customer_id);
       CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at);
+      CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+      CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
+      CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku);
     `);
 
     // Seed demo admin user
@@ -125,6 +148,19 @@ const initDB = async () => {
         ('Nilufar Yusupova', 'nilufar@example.com', '+998901111222', 'Central Asia Apparel', 'customer', 'referral'),
         ('Sherzod Alimov', 'sherzod@example.com', '+998712222333', 'UzExport Co', 'prospect', 'cold_call')
       ON CONFLICT DO NOTHING;
+    `);
+
+    // Seed sample products (wholesale apparel)
+    await client.query(`
+      INSERT INTO products (name, sku, category, description, size, color, unit_price, stock_quantity, reorder_level, warehouse, supplier, status)
+      VALUES
+        ('Classic Cotton T-Shirt', 'APP-TS-001', 'apparel', 'Premium 100% cotton crew-neck t-shirt for wholesale', 'M', 'White', 4.50, 1200, 200, 'Main Warehouse', 'Toshkent Textile Ltd', 'active'),
+        ('Slim Fit Denim Jeans', 'APP-JN-002', 'apparel', 'Stretch denim jeans, wholesale pack', '32', 'Blue', 12.90, 640, 150, 'Main Warehouse', 'Silk Road Trade', 'active'),
+        ('Winter Padded Jacket', 'OUT-JK-003', 'outerwear', 'Insulated waterproof winter jacket', 'L', 'Black', 28.00, 85, 50, 'Warehouse B', 'Central Asia Apparel', 'active'),
+        ('Leather Casual Sneakers', 'FW-SN-004', 'footwear', 'Genuine leather lace-up sneakers', '42', 'Brown', 22.50, 8, 30, 'Warehouse B', 'UzExport Co', 'out_of_stock'),
+        ('Wool Blend Scarf', 'ACC-SC-005', 'accessories', 'Soft wool-blend winter scarf', 'One Size', 'Grey', 6.75, 430, 100, 'Main Warehouse', 'Fashion House UZ', 'active'),
+        ('Cotton Bath Towel Set', 'TX-TW-006', 'textile', 'Absorbent cotton bath towels, set of 3', '70x140', 'Beige', 9.20, 0, 80, 'Main Warehouse', 'Toshkent Textile Ltd', 'out_of_stock')
+      ON CONFLICT (sku) DO NOTHING;
     `);
 
     console.log('✅ Database initialized successfully');

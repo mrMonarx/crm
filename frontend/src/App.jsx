@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Customers from './pages/Customers'
 import CustomerDetail from './pages/CustomerDetail'
+import Products from './pages/Products'
 import Deals from './pages/Deals'
 import Tasks from './pages/Tasks'
 import Activities from './pages/Activities'
@@ -47,6 +48,11 @@ function AppRoutes() {
       <Route path="/customers/:id" element={
         <PrivateRoute>
           <AppLayout><CustomerDetail /></AppLayout>
+        </PrivateRoute>
+      } />
+      <Route path="/products" element={
+        <PrivateRoute>
+          <AppLayout><Products /></AppLayout>
         </PrivateRoute>
       } />
       <Route path="/deals" element={

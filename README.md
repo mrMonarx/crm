@@ -287,6 +287,17 @@ push to main
 | PUT    | `/api/customers/:id`  | Update customer       |
 | DELETE | `/api/customers/:id`  | Delete customer       |
 
+### Products (Inventory / WMS)
+| Method | Endpoint                  | Description                  |
+|--------|---------------------------|------------------------------|
+| GET    | `/api/products`           | List (filters: category, status, search, low_stock) |
+| GET    | `/api/products/stats`     | Inventory summary & value    |
+| GET    | `/api/products/:id`       | Product detail               |
+| POST   | `/api/products`           | Create product               |
+| PUT    | `/api/products/:id`       | Update product               |
+| PATCH  | `/api/products/:id/stock` | Adjust stock (+/- quantity)  |
+| DELETE | `/api/products/:id`       | Delete product               |
+
 ### Deals
 | Method | Endpoint              | Description           |
 |--------|-----------------------|-----------------------|

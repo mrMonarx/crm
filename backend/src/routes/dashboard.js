@@ -8,7 +8,7 @@ router.use(authenticate);
 // GET /api/dashboard/stats
 router.get('/stats', async (req, res) => {
   try {
-    const [customers, deals, tasks, revenue] = await Promise.all([
+    const [customers, deals, tasks, revenue, products] = await Promise.all([
       pool.query(`
         SELECT
           COUNT(*) as total,
@@ -47,6 +47,14 @@ router.get('/stats', async (req, res) => {
           AND created_at >= NOW() - INTERVAL '6 months'
         GROUP BY month
         ORDER BY month ASC
+      `),
+      pool.query(`
+        SELECT
+          COUNT(*) as total,
+          COUNT(*) FILTER (WHERE stock_quantity <= reorder_level) as low_stock,
+          COALESCE(SUM(stock_quantity), 0) as total_units,
+          COALESCE(SUM(stock_quantity * unit_price), 0) as inventory_value
+        FROM products
       `)
     ]);
 
@@ -54,6 +62,7 @@ router.get('/stats', async (req, res) => {
       customers: customers.rows[0],
       deals: deals.rows[0],
       tasks: tasks.rows[0],
+      products: products.rows[0],
       monthly_revenue: revenue.rows
     });
   } catch (err) {
