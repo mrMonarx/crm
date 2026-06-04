@@ -12,6 +12,7 @@ const taskRoutes = require('./routes/tasks');
 const dashboardRoutes = require('./routes/dashboard');
 const activityRoutes = require('./routes/activities');
 const productRoutes = require('./routes/products');
+const systemRoutes = require('./routes/system');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,11 +24,12 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting (system/load-test endpointlari bundan ozod — load test uchun)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: { error: 'Too many requests, please try again later.' }
+  message: { error: 'Too many requests, please try again later.' },
+  skip: (req) => req.path.startsWith('/system')
 });
 app.use('/api/', limiter);
 
@@ -54,6 +56,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/system', systemRoutes);
 
 // 404 handler
 app.use((req, res) => {

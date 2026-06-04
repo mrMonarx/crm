@@ -5,14 +5,67 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
-    name: Deploy to EC2
+  # ============================================================
+  # 1) Backend test (real PostgreSQL bilan)
+  # ============================================================
+  test-backend:
+    name: Test Backend
     runs-on: ubuntu-latest
-
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: crm_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+      - name: Run tests
+        working-directory: ./backend
+        env:
+          DB_HOST: localhost
+          DB_PASSWORD: testpass
+          JWT_SECRET: test_secret_key_for_ci_pipeline_only
+        run: npm test --if-present
 
+  # ============================================================
+  # 2) Frontend build (Vite)
+  # ============================================================
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install & build
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build
+
+  # ============================================================
+  # 3) Deploy — AWS EC2'ga SSH orqali, Docker Compose bilan
+  # ============================================================
+  deploy:
+    name: Deploy to EC2 (Docker)
+    needs: [test-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -21,21 +74,8 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             cd /opt/crm
-
-            # Kodni yangilash
             git pull origin main
-
-            # Backend yangilash
-            cd /opt/crm/backend
-            npm install
-            pm2 restart crm-backend
-
-            # Frontend yangilash
-            cd /opt/crm/frontend
-            npm install
-            npm run build
-
-            # Nginx restart
-            sudo systemctl restart nginx
-
-            echo "✅ Deploy muvaffaqiyatli!"
+            docker compose down
+            docker compose up -d --build
+            docker compose ps
+            echo "Deploy muvaffaqiyatli (Docker)!"

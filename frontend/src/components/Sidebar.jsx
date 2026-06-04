@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, Briefcase, CheckSquare,
-  Activity, LogOut, Zap, Package
+  Activity, LogOut, Zap, Package, Server
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/deals', icon: Briefcase, label: 'Deals' },
   { to: '/tasks', icon: CheckSquare, label: 'Tasks' },
   { to: '/activities', icon: Activity, label: 'Activities' },
+  { to: '/system', icon: Server, label: 'System Health' },
 ]
 
 export default function Sidebar() {

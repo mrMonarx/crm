@@ -10,6 +10,7 @@ import Products from './pages/Products'
 import Deals from './pages/Deals'
 import Tasks from './pages/Tasks'
 import Activities from './pages/Activities'
+import SystemHealth from './pages/SystemHealth'
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth()
@@ -68,6 +69,11 @@ function AppRoutes() {
       <Route path="/activities" element={
         <PrivateRoute>
           <AppLayout><Activities /></AppLayout>
+        </PrivateRoute>
+      } />
+      <Route path="/system" element={
+        <PrivateRoute>
+          <AppLayout><SystemHealth /></AppLayout>
         </PrivateRoute>
       } />
       <Route path="*" element={<Navigate to="/" replace />} />
