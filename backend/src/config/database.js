@@ -171,6 +171,9 @@ const initDB = async () => {
   }
 };
 
-initDB();
+// Test muhitida DB initializatsiyasini o'tkazib yuboramiz (CI/CD uchun)
+if (process.env.NODE_ENV !== 'test') {
+  initDB();
+}
 
 module.exports = pool;

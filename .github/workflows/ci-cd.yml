@@ -36,6 +36,7 @@ jobs:
       - name: Run tests
         working-directory: ./backend
         env:
+          NODE_ENV: test
           DB_HOST: localhost
           DB_PASSWORD: testpass
           JWT_SECRET: test_secret_key_for_ci_pipeline_only
