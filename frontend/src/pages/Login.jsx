@@ -4,8 +4,8 @@ import { Zap, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-  const [email, setEmail] = useState('admin@crm.com')
-  const [password, setPassword] = useState('Admin1234!')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -141,20 +141,6 @@ export default function Login() {
             </button>
           </form>
 
-          <div style={{
-            marginTop: 24, padding: '16px', background: 'rgba(108,99,255,0.06)',
-            borderRadius: 10, border: '1px solid rgba(108,99,255,0.15)',
-          }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Demo Credentials
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-              Email: <span style={{ color: 'var(--text-primary)' }}>admin@crm.com</span>
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-              Password: <span style={{ color: 'var(--text-primary)' }}>Admin1234!</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
