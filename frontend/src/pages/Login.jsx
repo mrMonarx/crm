@@ -65,7 +65,7 @@ export default function Login() {
             <Zap size={26} color="white" fill="white" />
           </div>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 800, letterSpacing: '-0.5px' }}>
-            NexusCRM
+            NewCRM
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 6 }}>
             Best CRM System 2024
