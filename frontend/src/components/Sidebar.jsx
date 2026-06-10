@@ -55,7 +55,7 @@ export default function Sidebar() {
         </div>
         <div>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16, letterSpacing: '-0.3px' }}>
-            NexusCRM
+            NewCRM
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Cloud Platform</div>
         </div>
